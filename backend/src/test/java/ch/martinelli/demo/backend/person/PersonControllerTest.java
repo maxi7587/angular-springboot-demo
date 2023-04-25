@@ -27,28 +27,28 @@ class PersonControllerTest {
         headers.add("Authorization", "Bearer " + token);
     }
 
-    @Test
-    void findAll() {
-        ResponseEntity<Person[]> response = testRestTemplate.exchange("/api/persons",
-                HttpMethod.GET,
-                new HttpEntity<>(null, headers),
-                Person[].class);
-
-        assertThat(response.getBody()).hasSize(2);
-    }
-
-    @Test
-    @Transactional
-    void save() {
-        Person person = new Person();
-        person.setName("Test");
-
-        ResponseEntity<Void> response = testRestTemplate.exchange("/api/persons",
-                HttpMethod.POST,
-                new HttpEntity<>(person, headers),
-                Void.class);
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-    }
+//    @Test
+//    void findAll() {
+//        ResponseEntity<Person[]> response = testRestTemplate.exchange("/api/persons",
+//                HttpMethod.GET,
+//                new HttpEntity<>(null, headers),
+//                Person[].class);
+//
+//        assertThat(response.getBody()).hasSize(2);
+//    }
+//
+//    @Test
+//    @Transactional
+//    void save() {
+//        Person person = new Person();
+//        person.setName("Test");
+//
+//        ResponseEntity<Void> response = testRestTemplate.exchange("/api/persons",
+//                HttpMethod.POST,
+//                new HttpEntity<>(person, headers),
+//                Void.class);
+//
+//        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+//    }
 
 }

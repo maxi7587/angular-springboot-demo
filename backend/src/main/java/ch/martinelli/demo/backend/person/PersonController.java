@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// The RolesAllowed annotation is used to restrict access to users with the role USER.
 @RolesAllowed(Roles.USER)
 @RestController
-@RequestMapping("/api/persons")
+@RequestMapping("/api/persons") // Should be people!!!
 public class PersonController {
 
     private final PersonService personService;

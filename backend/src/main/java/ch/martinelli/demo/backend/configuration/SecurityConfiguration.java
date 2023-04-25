@@ -27,32 +27,47 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+// import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-
     private final RSAPublicKey key;
     private final RSAPrivateKey priv;
+    
+    @Autowired
+    private DataSource dataSource;
+    
+    @Autowired
+    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication().dataSource(dataSource);
+    }
 
     public SecurityConfiguration(@Value("${jwt.public.key}") RSAPublicKey key, @Value("${jwt.private.key}") RSAPrivateKey priv) {
         this.key = key;
         this.priv = priv;
     }
 
+    // With newer Spring Security versions HttpSecurity is configured using SecurityFilterChain and no longer extend WebSecurityConfigurerAdapater.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
+                // CSRF is enabled
                 .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth"))
                 .httpBasic(Customizer.withDefaults())
+                // use JWT token
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                // session is defined as stateless
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
@@ -61,21 +76,23 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Bean
-    UserDetailsService users() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("user")
-                        .password(passwordEncoder().encode("pass"))
-                        .roles(Roles.USER)
-                        .build()
-        );
-    }
-
+    // Former in memory DB implementation
+    // @Bean
+    // UserDetailsService users() {
+    //     return new InMemoryUserDetailsManager(
+    //             User.withUsername("user")
+    //                     .password(passwordEncoder().encode("pass"))
+    //                     .roles(Roles.USER)
+    //                     .build()
+    //     );
+    // }
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // We define encode and decoder using asymmetric keys. That means the private key is used to encode the token and the public key to decode.
     @Bean
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(this.key).build();
@@ -91,6 +108,10 @@ public class SecurityConfiguration {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+
+        // The JWT contains a claim “scope” that contains the user roles.
+        // By default, the JWT decoder adds a SCOPE_ suffix to the role names, and we want to avoid that.
+        // Therefore we have to set the authority prefix to an empty string.
         // Remove the SCOPE_ prefix
         grantedAuthoritiesConverter.setAuthorityPrefix("");
 

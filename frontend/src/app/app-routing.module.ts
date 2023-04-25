@@ -7,6 +7,7 @@ import {PersonEditComponent} from './person/edit/person-edit.component';
 
 const routes: Routes = [
     {path: '', redirectTo: 'persons', pathMatch: 'full'},
+    // In the route definition, the roles are configured in the data property.
     {path: 'persons', component: PersonComponent, canActivate: [AuthGuard], data: {role: 'ROLE_USER'}},
     {path: 'persons/:id', component: PersonEditComponent, canActivate: [AuthGuard], data: {role: 'ROLE_USER'}},
     {path: 'login', component: LoginComponent},

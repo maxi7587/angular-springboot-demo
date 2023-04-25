@@ -29,9 +29,12 @@ export class AuthService {
         sessionStorage.removeItem("app.roles");
     }
 
+    // In isUserInRole, the roles are fetched from the session storage and then checked against the passed role.
     isUserInRole(roleFromRoute: string) {
         const roles = sessionStorage.getItem("app.roles");
 
+
+        // this check works, but it's not correctly written (can discuss in the event)
         if (roles!.includes(",")) {
             if (roles === roleFromRoute) {
                 return true;

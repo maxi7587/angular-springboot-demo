@@ -11,6 +11,10 @@ export class AuthInterceptor implements HttpInterceptor {
     constructor(private router: Router) {
     }
 
+    // Once we have received and stored the token we need to pass the token in each subsequent REST call.
+    // That can be done with an HttpInterceptor.
+    // The token is read from the session storage and added to the Authorization head of the request.
+    // It also catches errors, and if the error is a 401 Unauthorized it redirects to the login page.
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let token = sessionStorage.getItem("app.token");
         if (token) {
