@@ -12,4 +12,4 @@ This project demonstrates the combination of Angular and Spring Boot. It uses JW
 1. From the project root, run `docker-compose up` (or `docker compose up`, depending on your system) to raise the DB container
 2. To raise the Back End, go to the backend folder and run `mvn spring-boot:run`
 3. To raise the Front End, go to the frontend folder, install dependencies (`npm install`) and run `npm start` (or `ng serve`)
-4. Open **localhost:4200** in your browser 
+4. Open **[the local app](localhost:4200)** in your browser 
