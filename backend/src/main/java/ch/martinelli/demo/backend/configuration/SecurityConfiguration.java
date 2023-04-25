@@ -46,7 +46,8 @@ public class SecurityConfiguration {
     
     @Autowired
     private DataSource dataSource;
-    
+
+    // the following method configures the Authentication library to use MySQL datasource
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource);

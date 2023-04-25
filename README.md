@@ -6,6 +6,8 @@ This project demonstrates the combination of Angular and Spring Boot. It uses JW
 
 - This is a fork from [angular-springboot-demo](https://github.com/simasch/angular-springboot-demo), with a few updates to user MySQL instead of an in memory database. So, in order to correctly raise the project, the MySQL container needs to be up.
 - MySQL credentials are exposed on both the docker-compose file and the application.properties file, but for our purpose, it's not relevant.
+- Follow [this link](https://martinelli.ch/angular-15-spring-boot-3-and-jwt/) to go to the project's guide (except for the MySQL implementation)
+- For the MySQL implementation (and Authentication configuration to work with it), pls look at `application.properties` and `SecurityConfiguration.java` files
 
 # How to raise the project
 
