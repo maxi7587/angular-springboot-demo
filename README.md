@@ -8,6 +8,9 @@ This project demonstrates the combination of Angular and Spring Boot. It uses JW
 - MySQL credentials are exposed on both the docker-compose file and the application.properties file, but for our purpose, it's not relevant.
 - Follow [this link](https://martinelli.ch/angular-15-spring-boot-3-and-jwt/) to go to the project's guide (except for the MySQL implementation)
 - For the MySQL implementation (and Authentication configuration to work with it), pls look at `application.properties` and `SecurityConfiguration.java` files
+- After creating the database, you have to manually create two tables:
+  1. **users**, with columns **username** (`varchar(50)`), **password** (`varchar(50)`) and **enabled** (`tinyint(1)`)
+  2. **authorites**, with columns **username** (`varchar(50)`) and **authority** (`varchar(50)`)
 
 # How to raise the project
 
